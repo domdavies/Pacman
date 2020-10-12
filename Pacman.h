@@ -19,6 +19,14 @@
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
 
+enum Direction {
+	Up = 0,
+	Down,
+	Left,
+	Right,
+	none
+};
+
 enum Walls {
 	topLefttCornerWall = 0,
 	btmLeftCornerWall,
@@ -43,7 +51,7 @@ struct Player {
 	Rect* _SourceRect;
 	Texture2D* _Texture;
 	int _moveMouth;
-	bool moveLeft = false, moveRight = false, moveUp = false, moveDown = false;
+	Direction currentDir, nextDir;
 };
 
 struct Collectable {
@@ -119,6 +127,7 @@ private:
 	Menu* _pause;
 	Menu* _start;	
 	Wall* _wall[MAX_ELEMENTS];
+	int** mMap;
 public:
 	/// <summary> Constructs the Pacman class. </summary>
 	Pacman(int argc, char* argv[]);
@@ -131,6 +140,8 @@ public:
 
 	/// <summary> Called every frame - update game logic here. </summary>
 	void virtual Update(int elapsedTime);
+
+	int GetTileAt(unsigned int h, unsigned int w);
 
 	/// <summary> Called every frame - draw game here. </summary>
 	void virtual Draw(int elapsedTime);

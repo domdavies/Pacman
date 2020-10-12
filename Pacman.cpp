@@ -2,6 +2,9 @@
 #include <fstream>
 #include <cstdlib>
 
+#define MAP_HEIGHT 28
+#define MAP_WIDTH 20 
+
 //2d array for map
 int _level[28][20] = {
 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -36,6 +39,22 @@ int _level[28][20] = {
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv)
 {
+	mMap = new int* [MAP_HEIGHT];
+
+	for (unsigned int i = 0; i < MAP_HEIGHT; i++)
+	{
+		mMap[i] = new int[MAP_WIDTH];
+	}
+
+	//populate the map array
+	for (unsigned int i = 0; i < MAP_HEIGHT; i++)
+	{
+		for (unsigned int j = 0; j < MAP_WIDTH; j++)
+		{
+			mMap[i][j] = _level[i][j];
+		}
+	}
+
 	_frameCount = 0;
 	_time = 0;
 	_maxMunchie = 0;
@@ -464,31 +483,19 @@ void Pacman::CheckViewPortCollision()
 void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
 {
 	if (state->IsKeyDown(Input::Keys::D)) {
-		_pacman->moveUp = false;
-		_pacman->moveDown = false;
-		_pacman->moveLeft = false;
-		_pacman->moveRight = true;
+		_pacman->currentDir = Direction::Right;
 		_pacman->_SourceRect->Y = 0.0f;
 	}
 	else if (state->IsKeyDown(Input::Keys::W)) {
-		_pacman->moveUp = true;
-		_pacman->moveDown = false;
-		_pacman->moveLeft = false;
-		_pacman->moveRight = false;
+		_pacman->currentDir = Direction::Up;
 		_pacman->_SourceRect->Y = 96.0f;
 	}
 	else if (state->IsKeyDown(Input::Keys::A)) {
-		_pacman->moveUp = false;
-		_pacman->moveDown = false;
-		_pacman->moveLeft = true;
-		_pacman->moveRight = false;
+		_pacman->currentDir = Direction::Left;
 		_pacman->_SourceRect->Y = 64.0f;
 	}
 	else if (state->IsKeyDown(Input::Keys::S)) {
-		_pacman->moveUp = false;
-		_pacman->moveDown = true;
-		_pacman->moveLeft = false;
-		_pacman->moveRight = false;
+		_pacman->currentDir = Direction::Down;
 		_pacman->_SourceRect->Y = 32.0f;
 	}
 }
@@ -496,8 +503,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
 void Pacman::UpdatePacman(int elapsedTime)
 {
 	//how about
-	float tmpDistance = _pacman->_cSpeed * elapsedTime;
-
+	int tmpDistance = _pacman->_cSpeed * elapsedTime;
 	//move pacmans mouth
 	if (_pacman->_moveMouth < 30)
 	{
@@ -512,7 +518,7 @@ void Pacman::UpdatePacman(int elapsedTime)
 			_pacman->_moveMouth = 0;
 	}
 
-	if (_pacman->moveDown)
+	if (_pacman->currentDir == 1)
 	{
 		_pacman->_Position->Y += tmpDistance; //moves pacman down
 
@@ -527,7 +533,7 @@ void Pacman::UpdatePacman(int elapsedTime)
 		}
 	}
 
-	if (_pacman->moveLeft)
+	if (_pacman->currentDir == 2)
 	{
 		_pacman->_Position->X -= tmpDistance; //Moves Pacman left
 		for (int i = 0; i < _maxWall; i++)
@@ -540,7 +546,8 @@ void Pacman::UpdatePacman(int elapsedTime)
 			}
 		}
 	}
-	if (_pacman->moveRight)
+
+	if (_pacman->currentDir == 3)
 	{
 		_pacman->_Position->X += tmpDistance; //Moves Pacman right
 		for (int i = 0; i < _maxWall; i++)
@@ -553,7 +560,8 @@ void Pacman::UpdatePacman(int elapsedTime)
 			}
 		}
 	}
-	if (_pacman->moveUp)
+
+	if (_pacman->currentDir == 0)
 	{
 		_pacman->_Position->Y -= tmpDistance; //Moves Pacman up
 		for (int i = 0; i < _maxWall; i++)
@@ -664,6 +672,17 @@ void Pacman::UpdatePowerUp(int elapsedTime)
 				_frameCount = 0;
 		}
 	}
+}
+
+int Pacman::GetTileAt(unsigned int h, unsigned int w)
+{
+	//return each tile in the array
+	if (h < MAP_HEIGHT && w < MAP_WIDTH)
+	{
+		return mMap[h][w];
+	}
+
+	return 0;
 }
 
 void Pacman::Draw(int elapsedTime)

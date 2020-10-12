@@ -1,0 +1,2 @@
+C:\Users\domda\Desktop\Github\Pacman\Debug\_PACMAN.exe
+C:\Users\domda\Desktop\Github\Pacman\Debug\_PACMAN.pdb

@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
+#include <list>
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -24,7 +25,7 @@ enum Direction {
 	Down,
 	Left,
 	Right,
-	none
+	STILL
 };
 
 enum Walls {
@@ -47,11 +48,13 @@ enum Walls {
 struct Player {
 	// Data to represent a player
 	float _cSpeed = .15;
+	Vector2* startPos;
 	Vector2* _Position;
 	Rect* _SourceRect;
 	Texture2D* _Texture;
 	int _moveMouth;
 	Direction currentDir, nextDir;
+	bool canTurn;
 };
 
 struct Collectable {
@@ -69,6 +72,16 @@ struct Menu {
 	Vector2* _menuStringPosition;
 	bool _menu;
 	bool _keyDown;
+};
+
+struct StartScreenMenu {
+	Texture2D* _background;
+	Rect* _rect;
+	Rect* selector;
+	bool _upKeyDown;
+	bool _downKeyDown;
+	bool _active;
+	bool _selectKeyDown;
 };
 
 struct Wall {
@@ -94,7 +107,7 @@ private:
 
 	void UpdateMunchie(int elapsedTime);
 
-	void CheckStart(Input::KeyboardState* state, Input::Keys startKey);
+	void StartGame(Input::KeyboardState* state, Input::Keys enter);
 
 	void UpdateCherry(int elapsedTime);
 	
@@ -104,8 +117,27 @@ private:
 
 	int ScoreBoard();
 
-	bool _dead = false;
+	void CheckIfCanTurn(Direction current, Direction _next);
 
+	Vector2 GetPacmanGridPosition();
+
+	bool CheckLevelComplete();
+
+	void StartNewLevel();
+
+	void UpdateMenu(Input::KeyboardState* state);
+
+	void MovePointerDown(Input::KeyboardState* state, Input::Keys downArrow);
+
+	void MovePointerUp(Input::KeyboardState* state, Input::Keys upArrow);
+
+	void ShowContollsMenu(Input::KeyboardState* state, Input::Keys enter);
+
+	void ExitGame(Input::KeyboardState* state, Input::Keys enter);
+
+	bool _dead = false;
+	bool _complete = false;
+	int munchiesCollected;
 	int _frameCount;
 	int _time;
 	int _maxMunchie;
@@ -125,7 +157,7 @@ private:
 	Collectable* _cherry;
 	Collectable* _powerUp[MAX_ELEMENTS];
 	Menu* _pause;
-	Menu* _start;	
+	StartScreenMenu* _startScreen;
 	Wall* _wall[MAX_ELEMENTS];
 	int** mMap;
 public:

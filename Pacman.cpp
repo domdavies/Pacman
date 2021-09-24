@@ -66,8 +66,12 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv)
 	_pause->_menu = false;
 	_pause->_keyDown = false;
 
-	_start = new Menu();
-	_start->_menu = true;
+	_startScreen = new StartScreenMenu();
+	_startScreen->selector = new Rect(550, 265, 50, 30);
+	_startScreen->_active = true;
+	_startScreen->_downKeyDown = false;
+	_startScreen->_upKeyDown = false;
+	_startScreen->_selectKeyDown = false;
 
 	_munchieTexture = new Texture2D();
 	_powerUpTexture = new Texture2D();
@@ -103,9 +107,13 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv)
 	_pacman->_Position = new Vector2();
 	_pacman->_SourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_pacman->_moveMouth = 0;
+	_pacman->currentDir = Direction::STILL;
+	_pacman->nextDir = Direction::STILL;
+	_pacman->startPos = new Vector2(288, 544);
 
 	_cherry = new Collectable();
-	_cherry->_Texture = &Texture2D();
+	_cherry->_Texture = new Texture2D();
+	_cherry->_Texture = _cherry->_Texture;
 	_cherry->_SrcRect = new Rect(0.0f, 0.0f, 32, 32);
 	_cherry->_Position = new Vector2();
 	_cherry->spawn = false;
@@ -113,11 +121,9 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv)
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
 	_scorePosition = new Vector2(700.0f, 25.0f);
-
 	//Initialise important Game aspects
   	Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25);
 	Input::Initialise();
-
 	// Start the Game Loop - This calls Update and Draw in game 	
 	Graphics::StartGameLoop();
 }
@@ -156,7 +162,7 @@ Pacman::~Pacman()
 		delete _powerUp[i];
 	}
 
-	delete _start;
+	delete _startScreen;
 	delete _pause;
 }
 
@@ -184,10 +190,9 @@ void Pacman::LoadContent()
 	_pause->_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
 
 	//set start menu parameters
-	_start->_menuBackground = new Texture2D();
-	_start->_menuBackground->Load("Textures/Transparency.png", false);
-	_start->_menuRectangle = new Rect(0.0f, 0.0f, Graphics::GetViewportWidth(), Graphics::GetViewportHeight());
-	_start->_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
+	_startScreen->_background = new Texture2D();
+	_startScreen->_background->Load("Textures/pacmanBackground.png", false);;
+	_startScreen->_rect = new Rect(0.0f, 0.0f, Graphics::GetViewportWidth(), Graphics::GetViewportHeight());
 
 	// Draws out th pacman map, based on a 2d array
     //can set up a function which can be passed a map (if multiple levels wanted)
@@ -380,6 +385,7 @@ void Pacman::LoadContent()
 	cout << "munchieCounter : " << munchieCounter << endl;
 	cout << "powerUpCounter: " << powerUpCounter << endl;
 	cout << "wallCount: " << wallCounter << endl;
+	//cout << GetTileAt(_pacman->_Position->Y / 32, _pacman->_Position->X / 32) << endl;
 }
 
 void Pacman::Update(int elapsedTime) {
@@ -387,12 +393,12 @@ void Pacman::Update(int elapsedTime) {
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 
 	CheckPaused(keyboardState, Input::Keys::P);
-	CheckStart(keyboardState, Input::Keys::SPACE);
 
-	if (!_pause->_menu && !_start->_menu && !_dead)
+	UpdateMenu(keyboardState);
+
+	if (!_pause->_menu && !_startScreen->_active && !_dead && !_complete)
 	{
 		_frameCount++;
-
 		Input(elapsedTime, keyboardState);	// get input from user
 		UpdatePacman(elapsedTime);			// update pacman's position, animation, etc
 		CheckViewPortCollision();
@@ -400,6 +406,11 @@ void Pacman::Update(int elapsedTime) {
 		UpdateCherry(elapsedTime);
 		UpdatePowerUp(elapsedTime);
 		ScoreBoard();
+		if (CheckLevelComplete())
+		{
+			_complete = true;
+			StartNewLevel();
+		}
 	}
 }
 
@@ -441,16 +452,16 @@ bool Pacman::collisionCheck(int x1, int y1, int width1, int height1, int x2, int
 	return false;
 }
 
-void Pacman::CheckStart(Input::KeyboardState* state, Input::Keys startKey)
+void Pacman::StartGame(Input::KeyboardState* state, Input::Keys selectKey)
 {
 	//initializes the start screen
-	if (state->IsKeyDown(startKey))
+	if (state->IsKeyDown(selectKey))
 	{
-		_start->_keyDown = true;
-		_start->_menu = false;
+		_startScreen->_selectKeyDown = true;
+		_startScreen->_active = false;
 	}
-	if (state->IsKeyUp(startKey))
-		_start->_keyDown = false;
+	if (state->IsKeyUp(selectKey))
+		_startScreen->_selectKeyDown = false;
 }
 
 void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
@@ -483,20 +494,16 @@ void Pacman::CheckViewPortCollision()
 void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
 {
 	if (state->IsKeyDown(Input::Keys::D)) {
-		_pacman->currentDir = Direction::Right;
-		_pacman->_SourceRect->Y = 0.0f;
+		_pacman->nextDir = Direction::Right;
 	}
 	else if (state->IsKeyDown(Input::Keys::W)) {
-		_pacman->currentDir = Direction::Up;
-		_pacman->_SourceRect->Y = 96.0f;
+		_pacman->nextDir = Direction::Up;
 	}
 	else if (state->IsKeyDown(Input::Keys::A)) {
-		_pacman->currentDir = Direction::Left;
-		_pacman->_SourceRect->Y = 64.0f;
+		_pacman->nextDir = Direction::Left;
 	}
 	else if (state->IsKeyDown(Input::Keys::S)) {
-		_pacman->currentDir = Direction::Down;
-		_pacman->_SourceRect->Y = 32.0f;
+		_pacman->nextDir = Direction::Down;
 	}
 }
 
@@ -518,8 +525,21 @@ void Pacman::UpdatePacman(int elapsedTime)
 			_pacman->_moveMouth = 0;
 	}
 
+	if (_pacman->currentDir == STILL && _pacman->nextDir != STILL)
+	{
+		_pacman->currentDir = _pacman->nextDir;
+	}
+
+	if (_pacman->canTurn)
+	{
+		_pacman->currentDir = _pacman->nextDir;
+		_pacman->canTurn = false;
+	}
+	//cout << _pacman->currentDir << "  " << _pacman->nextDir << endl;
+
 	if (_pacman->currentDir == 1)
 	{
+		_pacman->_SourceRect->Y = 32.0f;
 		_pacman->_Position->Y += tmpDistance; //moves pacman down
 
 		for (int i = 0; i < _maxWall; i++)
@@ -528,13 +548,14 @@ void Pacman::UpdatePacman(int elapsedTime)
 				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
 			{
 				_pacman->_Position->Y -= tmpDistance;
-				cout << "colided with wall" << endl;
+				//cout << "colided with wall" << endl;
 			}
 		}
 	}
 
 	if (_pacman->currentDir == 2)
 	{
+		_pacman->_SourceRect->Y = 64.0f;
 		_pacman->_Position->X -= tmpDistance; //Moves Pacman left
 		for (int i = 0; i < _maxWall; i++)
 		{
@@ -542,13 +563,14 @@ void Pacman::UpdatePacman(int elapsedTime)
 				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
 			{
 				_pacman->_Position->X += tmpDistance;
-				cout << "colided with wall" << endl;
+				//cout << "colided with wall" << endl;
 			}
 		}
 	}
 
 	if (_pacman->currentDir == 3)
 	{
+		_pacman->_SourceRect->Y = 0.0f;
 		_pacman->_Position->X += tmpDistance; //Moves Pacman right
 		for (int i = 0; i < _maxWall; i++)
 		{
@@ -556,24 +578,163 @@ void Pacman::UpdatePacman(int elapsedTime)
 				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
 			{
 				_pacman->_Position->X -= tmpDistance;
-				cout << "colided with wall" << endl;
+				//cout << "colided with wall" << endl;
 			}
 		}
 	}
 
 	if (_pacman->currentDir == 0)
 	{
+		_pacman->_SourceRect->Y = 96.0f;
 		_pacman->_Position->Y -= tmpDistance; //Moves Pacman up
 		for (int i = 0; i < _maxWall; i++)
-			{
+		{
 			if (collisionCheck(_pacman->_Position->X + 1, _pacman->_Position->Y + 1, _pacman->_SourceRect->Width - 2, _pacman->_SourceRect->Height - 2,
 				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
 			{
 				_pacman->_Position->Y += tmpDistance;
-				cout << "colided with wall" << endl;
+				//cout << "colided with wall" << endl;
 			}
 		}
 	}
+	CheckIfCanTurn(_pacman->currentDir, _pacman->nextDir);
+}
+
+void Pacman::CheckIfCanTurn(Direction direction, Direction next) {
+	//cout << "checking ...";
+	if (next == Direction::Up && direction != Direction::Up)
+	{
+		if (GetTileAt((_pacman->_Position->Y / 32) - 1, (_pacman->_Position->X / 32)) == 1)
+		{
+			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
+			_pacman->canTurn = true;
+			//cout << "can turn" << endl;
+		}
+	}
+	if (next == Direction::Down && direction != Direction::Down)
+	{
+		if (GetTileAt((_pacman->_Position->Y / 32) + 1, (_pacman->_Position->X / 32)) == 1)
+		{
+			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
+			_pacman->canTurn = true;
+			//cout << "can turn" << endl;
+		}
+	}
+	if (next == Direction::Left && direction != Direction::Left)
+	{
+		if (GetTileAt((_pacman->_Position->Y / 32), (_pacman->_Position->X / 32) - 1) == 1)
+		{
+			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+			_pacman->canTurn = true;
+			//cout << "can turn" << endl;
+		}
+	}
+	if (next == Direction::Right && direction != Direction::Right)
+	{
+		if (GetTileAt((_pacman->_Position->Y / 32), (_pacman->_Position->X / 32) + 1) == 1)
+		{
+			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+			_pacman->canTurn = true;
+			//cout << "can turn" << endl;
+		}
+	}
+}
+
+Vector2 Pacman::GetPacmanGridPosition()
+{
+	return Vector2((int)_pacman->_Position->X / 32, (int)_pacman->_Position->Y / 32);
+}
+
+bool Pacman::CheckLevelComplete()
+{
+	if (munchiesCollected == _maxMunchie + _maxPowerUp)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+void Pacman::StartNewLevel()
+{
+	for (int i = 0; i < _maxMunchie; i++)
+	{
+		_munchie[i]->spawn = true;
+		if (i < _maxPowerUp)
+		{
+			_powerUp[i]->spawn = true;
+		}
+	}
+	_pacman->_Position = _pacman->startPos;
+	_pacman->currentDir = Direction::STILL;
+	_pacman->nextDir = Direction::STILL;
+
+	_complete = false;
+}
+
+void Pacman::UpdateMenu(Input::KeyboardState* state)
+{
+	MovePointerDown(state, Input::Keys::DOWN);
+	MovePointerUp(state, Input::Keys::UP);
+
+	if (_startScreen->selector->Y == 265)
+	{
+	    StartGame(state, Input::Keys::RETURN);
+	}
+	if (_startScreen->selector->Y == 315)
+	{
+		ShowContollsMenu(state, Input::Keys::RETURN);
+	}
+	if (_startScreen->selector->Y == 365)
+	{
+		ExitGame(state, Input::Keys::RETURN);
+	}
+}
+
+void Pacman::MovePointerDown(Input::KeyboardState* state, Input::Keys downArrow)
+{
+	if (state->IsKeyDown(downArrow) && !_startScreen->_downKeyDown)
+	{
+		_startScreen->_downKeyDown = true;
+		_startScreen->selector->Y += 50;
+		if (_startScreen->selector->Y > 365)
+		{
+			_startScreen->selector->Y = 265;
+		}
+	}
+	if (state->IsKeyUp(downArrow))
+		_startScreen->_downKeyDown = false;
+}
+
+void Pacman::MovePointerUp(Input::KeyboardState* state, Input::Keys upArrow)
+{
+	if (state->IsKeyDown(upArrow) && !_startScreen->_upKeyDown)
+	{
+		_startScreen->_upKeyDown = true;
+		_startScreen->selector->Y -= 50;
+		if (_startScreen->selector->Y < 265)
+		{
+			_startScreen->selector->Y = 365;
+		}
+	}
+	if (state->IsKeyUp(upArrow))
+		_startScreen->_upKeyDown = false;
+}
+
+void Pacman::ShowContollsMenu(Input::KeyboardState* state, Input::Keys enter)
+{
+	
+}
+
+void Pacman::ExitGame(Input::KeyboardState* state, Input::Keys enter)
+{
+	if (state->IsKeyDown(enter))
+	{
+		_startScreen->_selectKeyDown = true;
+		exit(0);
+	}
+	if (state->IsKeyUp(enter))
+		_startScreen->_selectKeyDown = false;
 }
 
 void Pacman::UpdateMunchie(int elapsedTime)
@@ -587,7 +748,8 @@ void Pacman::UpdateMunchie(int elapsedTime)
 			{
 				score += 10;
 				_munchie[i]->spawn = false;
-				cout << "colided with munchie" << endl;
+				munchiesCollected++;
+				cout << "colided with munchie " << munchiesCollected << endl;
 			}
 
 			if (_frameCount < 30)
@@ -614,7 +776,7 @@ void Pacman::UpdateCherry(int elapsedTime)
 	{
 		_time++;
 		_cherry->spawn = true;
-		if (_time >= 500 * elapsedTime)
+		if (_time >= 100 * elapsedTime)
 		{
 			_cherry->spawn = false;
 			_cherry->_rand = 0;
@@ -627,7 +789,7 @@ void Pacman::UpdateCherry(int elapsedTime)
 
 	if (_cherry->spawn == true)
 	{
-		if (collisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height,
+		if (collisionCheck(_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width /2, _pacman->_SourceRect->Height /2,
 			_cherry->_Position->X, _cherry->_Position->Y, _cherry->_SrcRect->Width / 2, _cherry->_SrcRect->Height / 2))
 		{
 			score += 100;
@@ -656,10 +818,13 @@ void Pacman::UpdatePowerUp(int elapsedTime)
 			_powerUp[i]->_Position->X, _powerUp[i]->_Position->Y, _powerUp[i]->_SrcRect->Width / 2, _powerUp[i]->_SrcRect->Height / 2))
 		{
 			if (_powerUp[i]->spawn == true)
+			{
 				score += 10;
 
-			_powerUp[i]->spawn = false;
-			cout << "colided with powerup" << endl;
+				_powerUp[i]->spawn = false;
+				cout << "colided with powerup " << munchiesCollected << endl;
+				munchiesCollected++;
+			}
 		}
 		if (_frameCount < 30)
 		{
@@ -706,7 +871,7 @@ void Pacman::Draw(int elapsedTime)
 		if (_powerUp[i]->spawn == true)
 		{
 			SpriteBatch::Draw(_powerUpTexture, _powerUp[i]->_Position, _powerUp[i]->_SrcRect);
-		}
+		};
 	}
 
 	if (_cherry->spawn == true)
@@ -722,21 +887,45 @@ void Pacman::Draw(int elapsedTime)
 	SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect); // Draws Pacman
 
 	//draws the start menu
-	if (_start->_menu)
+	if (_startScreen->_active)
 	{
-		std::stringstream startStream;
-		startStream << "START - press space!";
+		std::stringstream play;
+		play << "PLAY";
+		SpriteBatch::Draw(_startScreen->_background, _startScreen->_rect, nullptr);
+		Vector2* _playStringPosition = new Vector2((Graphics::GetViewportWidth() / 2.0f) - 50, (Graphics::GetViewportHeight() / 2.0f) - 100);
+		SpriteBatch::DrawString(play.str().c_str(), _playStringPosition, Color::Cyan);
 
-		SpriteBatch::Draw(_start->_menuBackground, _start->_menuRectangle, nullptr);
-		SpriteBatch::DrawString(startStream.str().c_str(), _start->_menuStringPosition, Color::Yellow);
+		std::stringstream options;
+		options << "CONTROLS";
+		Vector2* _optionsStringPosition = new Vector2((Graphics::GetViewportWidth() / 2.0f) -80, (Graphics::GetViewportHeight() / 2.0f) - 50);
+		SpriteBatch::DrawString(options.str().c_str(), _optionsStringPosition, Color::Cyan);
+
+		std::stringstream quit;
+		quit << "QUIT";
+		Vector2* _quitStringPosition = new Vector2((Graphics::GetViewportWidth() / 2.0f) - 50, (Graphics::GetViewportHeight() / 2.0f));
+		SpriteBatch::DrawString(quit.str().c_str(), _quitStringPosition, Color::Cyan);
+
+		Texture2D* _pointerTex = new Texture2D();
+		_pointerTex->Load("Textures/pointer.png", false);
+
+		SpriteBatch::Draw(_pointerTex, _startScreen->selector, nullptr);
+
+		//std::stringstream startStream;
+		//startStream << "START - press space!";
+
+		//SpriteBatch::Draw(_start->_menuBackground, _start->_menuRectangle, nullptr);
+		//SpriteBatch::DrawString(startStream.str().c_str(), _start->_menuStringPosition, Color::Yellow);
 	}
 
-	// Draws String
-	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
+	if (!_startScreen->_active)
+	{
+		// Draws String
+		SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
 
-	std::stringstream scoreStream;
-	scoreStream << "Score: " << score << endl;
-	SpriteBatch::DrawString(scoreStream.str().c_str(), _scorePosition, Color::Green);
+		std::stringstream scoreStream;
+		scoreStream << "Score: " << score << endl;
+		SpriteBatch::DrawString(scoreStream.str().c_str(), _scorePosition, Color::Green);
+	}
 
 	//pause screen
 	if (_pause->_menu)

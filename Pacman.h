@@ -97,6 +97,8 @@ struct Wall {
 class Pacman : public Game
 {
 private:
+	void LoadGhosts();
+
 	void Input(int elapsedTime, Input::KeyboardState* state);
 
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
@@ -135,6 +137,16 @@ private:
 
 	void ExitGame(Input::KeyboardState* state, Input::Keys enter);
 
+	void Move(Player* ghost, int elapsedTime);
+
+	void UpdateGhosts(int elapsedTime);
+
+	void ChooseRandomDirection(Player* ghost);
+
+	void ChasePacman();
+
+	void PredictPacmanPath();
+
 	bool _dead = false;
 	bool _complete = false;
 	int munchiesCollected;
@@ -145,6 +157,11 @@ private:
 	int _maxWall;
 	int score;
 
+	Texture2D* _inkyTexture;
+	Texture2D* _pinkyTexture;
+	Texture2D* _blinkyTexture;
+	Texture2D* _clideTexture;
+
 	Texture2D* _munchieTexture;
 	Texture2D* _powerUpTexture;
 	Texture2D* _wallTexture;
@@ -153,6 +170,7 @@ private:
 	Vector2* _scorePosition;
 
 	Player* _pacman;
+	Player* _ghosts[4];
 	Collectable* _munchie[MAX_ELEMENTS];
 	Collectable* _cherry;
 	Collectable* _powerUp[MAX_ELEMENTS];

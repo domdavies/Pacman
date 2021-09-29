@@ -18,7 +18,7 @@ int _level[28][20] = {
 {8 ,1 ,1 ,1 ,1 ,8 ,1 ,1 ,1 ,8 ,1 ,1 ,1 ,8 ,1 ,1 ,1 ,1 ,8 ,0},
 {13,7 ,7 ,4 ,1 ,13,7,10 ,1,12, 1, 9, 7,16 ,1 ,6 ,7, 7,16 ,0},
 {8 ,0 ,0 ,8 ,1 ,8 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,8 ,1 ,8 ,0 ,0 ,8 ,0},
-{5 ,7 ,7 ,3 ,1,12 ,1 ,6 ,14,14,14,4 ,1,12 ,1 ,5 ,7 ,7,15 ,7},
+{5 ,7 ,7 ,3 ,1,12 ,1 ,6 ,14,20,14,4 ,1,12 ,1 ,5 ,7 ,7,15 ,7},
 {1, 1 ,1 ,1 ,1 ,1 ,1 ,5 ,15,15,15,3 ,1, 1 ,1 ,1 ,1 ,1 ,1 ,1},
 {6,14,14 ,4 ,1,11 ,1 ,1 ,1 ,1 ,1 ,1 ,1,11 ,1 ,6,14,14,14 ,7},
 {13,15,15,3 ,1,12 ,1 ,9 ,7 ,14,7,10, 1,12 ,1 ,5,15,15,16, 0},
@@ -101,6 +101,21 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv)
 		_powerUp[i]->spawn = true;
 	}
 
+	for (int i = 0; i < 4; i++)
+	{
+		_ghosts[i] = new Player();
+		_ghosts[i]->_Texture = new Texture2D();
+		_ghosts[i]->_Texture = _ghosts[i]->_Texture;
+		_ghosts[i]->_Position = new Vector2();
+		_ghosts[i]->_SourceRect = new Rect(0.0f, 0.0f, 32, 32);
+		_ghosts[i]->currentDir = Direction::STILL;
+		_ghosts[i]->nextDir = Direction::STILL;
+	}
+	_ghosts[0]->startPos = new Vector2(32, 96);
+	_ghosts[1]->startPos = new Vector2(544, 96);
+	_ghosts[2]->startPos = new Vector2(32, 672);
+	_ghosts[3]->startPos = new Vector2(544, 672);
+
 	_pacman = new Player;
 	_pacman->_Texture = new Texture2D();
 	_pacman->_Texture = _pacman->_Texture;
@@ -168,6 +183,7 @@ Pacman::~Pacman()
 
 void Pacman::LoadContent()
 {
+	LoadGhosts();
 	// load border
 	_wallTexture->Load("Textures/Borders.png", false);
 
@@ -400,6 +416,7 @@ void Pacman::Update(int elapsedTime) {
 	{
 		_frameCount++;
 		Input(elapsedTime, keyboardState);	// get input from user
+		UpdateGhosts(elapsedTime);
 		UpdatePacman(elapsedTime);			// update pacman's position, animation, etc
 		CheckViewPortCollision();
 		UpdateMunchie(elapsedTime);
@@ -491,6 +508,29 @@ void Pacman::CheckViewPortCollision()
 		_pacman->_Position->Y = Graphics::GetViewportHeight() - _pacman->_SourceRect->Width;
 }
 
+void Pacman::LoadGhosts()
+{
+	_inkyTexture = new Texture2D();
+	_inkyTexture->Load("Textures/Inky.png", false);
+	_ghosts[0]->_Texture = _inkyTexture;
+	_ghosts[0]->_Position = _ghosts[0]->startPos;
+
+	_pinkyTexture = new Texture2D();
+	_pinkyTexture->Load("Textures/Pinky.png", false);
+	_ghosts[1]->_Texture = _pinkyTexture;
+	_ghosts[1]->_Position = _ghosts[1]->startPos;
+
+	_blinkyTexture = new Texture2D();
+	_blinkyTexture->Load("Textures/Blinky.png", false);
+	_ghosts[2]->_Texture = _blinkyTexture;
+	_ghosts[2]->_Position = _ghosts[2]->startPos;
+
+	_clideTexture = new Texture2D();
+	_clideTexture->Load("Textures/Clide.png", false);
+	_ghosts[3]->_Texture = _clideTexture;
+	_ghosts[3]->_Position = _ghosts[3]->startPos;
+}
+
 void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
 {
 	if (state->IsKeyDown(Input::Keys::D)) {
@@ -509,8 +549,6 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
 
 void Pacman::UpdatePacman(int elapsedTime)
 {
-	//how about
-	int tmpDistance = _pacman->_cSpeed * elapsedTime;
 	//move pacmans mouth
 	if (_pacman->_moveMouth < 30)
 	{
@@ -537,66 +575,7 @@ void Pacman::UpdatePacman(int elapsedTime)
 	}
 	//cout << _pacman->currentDir << "  " << _pacman->nextDir << endl;
 
-	if (_pacman->currentDir == 1)
-	{
-		_pacman->_SourceRect->Y = 32.0f;
-		_pacman->_Position->Y += tmpDistance; //moves pacman down
-
-		for (int i = 0; i < _maxWall; i++)
-		{
-			if (collisionCheck(_pacman->_Position->X + 1, _pacman->_Position->Y + 1, _pacman->_SourceRect->Width - 2, _pacman->_SourceRect->Height - 2,
-				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
-			{
-				_pacman->_Position->Y -= tmpDistance;
-				//cout << "colided with wall" << endl;
-			}
-		}
-	}
-
-	if (_pacman->currentDir == 2)
-	{
-		_pacman->_SourceRect->Y = 64.0f;
-		_pacman->_Position->X -= tmpDistance; //Moves Pacman left
-		for (int i = 0; i < _maxWall; i++)
-		{
-			if (collisionCheck(_pacman->_Position->X + 1, _pacman->_Position->Y + 1, _pacman->_SourceRect->Width - 2, _pacman->_SourceRect->Height - 2,
-				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
-			{
-				_pacman->_Position->X += tmpDistance;
-				//cout << "colided with wall" << endl;
-			}
-		}
-	}
-
-	if (_pacman->currentDir == 3)
-	{
-		_pacman->_SourceRect->Y = 0.0f;
-		_pacman->_Position->X += tmpDistance; //Moves Pacman right
-		for (int i = 0; i < _maxWall; i++)
-		{
-			if (collisionCheck(_pacman->_Position->X + 1, _pacman->_Position->Y + 1, _pacman->_SourceRect->Width - 2, _pacman->_SourceRect->Height - 2,
-				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
-			{
-				_pacman->_Position->X -= tmpDistance;
-				//cout << "colided with wall" << endl;
-			}
-		}
-	}
-
-	if (_pacman->currentDir == 0)
-	{
-		_pacman->_SourceRect->Y = 96.0f;
-		_pacman->_Position->Y -= tmpDistance; //Moves Pacman up
-		for (int i = 0; i < _maxWall; i++)
-		{
-			if (collisionCheck(_pacman->_Position->X + 1, _pacman->_Position->Y + 1, _pacman->_SourceRect->Width - 2, _pacman->_SourceRect->Height - 2,
-				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
-			{
-				_pacman->_Position->Y += tmpDistance;
-				//cout << "colided with wall" << endl;
-			}
-		}
-	}
+	Move(_pacman, elapsedTime);
 	CheckIfCanTurn(_pacman->currentDir, _pacman->nextDir);
 }
 
@@ -607,6 +586,8 @@ void Pacman::CheckIfCanTurn(Direction direction, Direction next) {
 		if (GetTileAt((_pacman->_Position->Y / 32) - 1, (_pacman->_Position->X / 32)) == 1)
 		{
 			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
+			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+
 			_pacman->canTurn = true;
 			//cout << "can turn" << endl;
 		}
@@ -616,6 +597,8 @@ void Pacman::CheckIfCanTurn(Direction direction, Direction next) {
 		if (GetTileAt((_pacman->_Position->Y / 32) + 1, (_pacman->_Position->X / 32)) == 1)
 		{
 			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
+	    	_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+		
 			_pacman->canTurn = true;
 			//cout << "can turn" << endl;
 		}
@@ -624,7 +607,9 @@ void Pacman::CheckIfCanTurn(Direction direction, Direction next) {
 	{
 		if (GetTileAt((_pacman->_Position->Y / 32), (_pacman->_Position->X / 32) - 1) == 1)
 		{
-			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
+			_pacman->_Position->Y = ((int)(_pacman->_Position->Y) / 32) * 32;
+
 			_pacman->canTurn = true;
 			//cout << "can turn" << endl;
 		}
@@ -633,7 +618,9 @@ void Pacman::CheckIfCanTurn(Direction direction, Direction next) {
 	{
 		if (GetTileAt((_pacman->_Position->Y / 32), (_pacman->_Position->X / 32) + 1) == 1)
 		{
+			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
 			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+
 			_pacman->canTurn = true;
 			//cout << "can turn" << endl;
 		}
@@ -735,6 +722,105 @@ void Pacman::ExitGame(Input::KeyboardState* state, Input::Keys enter)
 	}
 	if (state->IsKeyUp(enter))
 		_startScreen->_selectKeyDown = false;
+}
+
+void Pacman::Move(Player* player, int elapsedTime)
+{
+	int tmpDistance = player->_cSpeed * elapsedTime;
+	if (player->currentDir == 1)
+	{
+		player->_SourceRect->Y = 32.0f;
+		player->_Position->Y += tmpDistance; //moves pacman down
+
+		for (int i = 0; i < _maxWall; i++)
+		{
+			if (collisionCheck(player->_Position->X + 1, player->_Position->Y + 1, player->_SourceRect->Width - 2, player->_SourceRect->Height - 2,
+				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
+			{
+				player->_Position->Y -= tmpDistance;
+				player->currentDir = Direction::STILL;
+				//cout << "colided with wall" << endl;
+			}
+		}
+	}
+
+	if (player->currentDir == 2)
+	{
+		player->_SourceRect->Y = 64.0f;
+		player->_Position->X -= tmpDistance; //Moves Pacman left
+		for (int i = 0; i < _maxWall; i++)
+		{
+			if (collisionCheck(player->_Position->X + 1, player->_Position->Y + 1, player->_SourceRect->Width - 2, player->_SourceRect->Height - 2,
+				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
+			{
+				player->_Position->X += tmpDistance;
+				player->currentDir = Direction::STILL;
+				//cout << "colided with wall" << endl;
+			}
+		}
+	}
+
+	if (player->currentDir == 3)
+	{
+		player->_SourceRect->Y = 0.0f;
+		player->_Position->X += tmpDistance; //Moves Pacman right
+		for (int i = 0; i < _maxWall; i++)
+		{
+			if (collisionCheck(player->_Position->X + 1, player->_Position->Y + 1, player->_SourceRect->Width - 2, player->_SourceRect->Height - 2,
+				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
+			{
+				player->_Position->X -= tmpDistance;
+				player->currentDir = Direction::STILL;
+				//cout << "colided with wall" << endl;
+			}
+		}
+	}
+
+	if (player->currentDir == 0)
+	{
+		player->_SourceRect->Y = 96.0f;
+		player->_Position->Y -= tmpDistance; //Moves Pacman up
+		for (int i = 0; i < _maxWall; i++)
+		{
+			if (collisionCheck(player->_Position->X + 1, player->_Position->Y + 1, player->_SourceRect->Width - 2, player->_SourceRect->Height - 2,
+				_wall[i]->_Position->X, _wall[i]->_Position->Y, _wall[i]->_SrcRect->Width, _wall[i]->_SrcRect->Height))
+			{
+				player->_Position->Y += tmpDistance;
+				player->currentDir = Direction::STILL;
+				//cout << "colided with wall" << endl;
+			}
+		}
+	}
+}
+
+void Pacman::UpdateGhosts(int elapsedTime)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		Move(_ghosts[i], elapsedTime);
+		ChooseRandomDirection(_ghosts[i]);
+	}
+}
+
+void Pacman::ChooseRandomDirection(Player* ghost)
+{
+	if (ghost->currentDir == Direction::STILL)
+	{
+		int randNum = (rand() % 4);
+		switch (randNum)
+		{
+		case 0: ghost->currentDir = Direction::Up;
+			break;
+		case 1: ghost->currentDir = Direction::Down;
+			break;
+		case 2: ghost->currentDir = Direction::Left;
+			break;
+		case 3: ghost->currentDir = Direction::Right;
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void Pacman::UpdateMunchie(int elapsedTime)
@@ -885,6 +971,11 @@ void Pacman::Draw(int elapsedTime)
 	}
 
 	SpriteBatch::Draw(_pacman->_Texture, _pacman->_Position, _pacman->_SourceRect); // Draws Pacman
+
+	for (int i = 0; i < 4; i++)
+	{
+		SpriteBatch::Draw(_ghosts[i]->_Texture, _ghosts[i]->_Position, _ghosts[i]->_SourceRect); // Draws Ghosts
+	}
 
 	//draws the start menu
 	if (_startScreen->_active)

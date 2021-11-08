@@ -1,17 +1,4 @@
-﻿  Main.cpp
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\vector(1757,29): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>::_Mypair': class 'std::_Compressed_pair<std::allocator<S2D::Input::Keys>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>'
-          with
-          [
-              _Ty=S2D::Input::Keys
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\vector(1757): message : see declaration of 'std::_Compressed_pair<std::allocator<S2D::Input::Keys>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
-          with
-          [
-              _Ty=S2D::Input::Keys
-          ]
-C:\Users\domda\Desktop\Github\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>' being compiled
-C:\Users\domda\Desktop\Github\Pacman\Pacman.h(50,16): warning C4305: 'initializing': truncation from 'double' to 'float'
-  Pacman.cpp
+﻿  Pacman.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\vector(1757,29): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>::_Mypair': class 'std::_Compressed_pair<std::allocator<S2D::Input::Keys>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>'
           with
           [
@@ -60,59 +47,62 @@ C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(384,34): warning C4244: '=': con
 C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(385,34): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(387,34): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(388,34): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(439,8): warning C4553: '==': result of expression not used; did you intend '='?
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(437,7): warning C4101: 'name': unreferenced local variable
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(499,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(502,31): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(505,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(508,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(586,74): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(586,46): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(588,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(589,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(597,74): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(597,46): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(599,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(600,65): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(608,76): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(608,40): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(610,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(611,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(619,76): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(619,40): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(621,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(622,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(632,77): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(632,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(729,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(738,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(738,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(737,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(737,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(754,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(754,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(753,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(753,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(770,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(770,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(769,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(769,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(786,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(786,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(785,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(785,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(833,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(833,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(832,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(832,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(879,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(879,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(878,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(878,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(904,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(904,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(903,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(903,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Generating Code...
-C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(453): warning C4715: 'Pacman::ScoreBoard': not all control paths return a value
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(447,8): warning C4553: '==': result of expression not used; did you intend '='?
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(445,7): warning C4101: 'name': unreferenced local variable
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(507,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(510,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(513,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(516,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(594,72): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(594,45): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(596,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(597,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(605,72): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(605,45): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(607,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(608,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(616,74): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(616,39): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(618,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(619,62): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(627,74): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(627,39): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(629,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(630,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(640,77): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(640,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(737,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(746,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(746,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(745,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(745,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(762,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(762,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(761,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(761,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(778,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(778,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(777,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(777,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(794,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(794,24): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(793,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(793,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(840,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(840,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(839,69): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(839,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(857,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(857,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(856,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(856,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(903,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(903,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(902,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(902,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(928,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(928,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(927,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(927,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\domda\Desktop\Github\Pacman\Pacman.cpp(461): warning C4715: 'Pacman::ScoreBoard': not all control paths return a value
   _PACMAN.vcxproj -> C:\Users\domda\Desktop\Github\Pacman\Debug\_PACMAN.exe

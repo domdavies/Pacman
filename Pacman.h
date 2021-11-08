@@ -55,6 +55,7 @@ struct Player {
 	int _moveMouth;
 	Direction currentDir, nextDir;
 	bool canTurn;
+	vector<Direction> directionsToTurn;
 };
 
 struct Collectable {
@@ -103,7 +104,7 @@ private:
 
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
 
-	void CheckViewPortCollision();
+	void CheckViewPortCollision(Player* player);
 
 	void UpdatePacman(int elapsedTime);
 
@@ -119,7 +120,7 @@ private:
 
 	int ScoreBoard();
 
-	void CheckIfCanTurn(Direction current, Direction _next);
+	void CheckIfCanTurn(Player* player, Direction current, Direction _next);
 
 	Vector2 GetPacmanGridPosition();
 
@@ -143,9 +144,9 @@ private:
 
 	void ChooseRandomDirection(Player* ghost);
 
-	void ChasePacman();
+	bool IsKilled();
 
-	void PredictPacmanPath();
+	void TurnAtIntersection(Player* player, Direction direction, Direction next);
 
 	bool _dead = false;
 	bool _complete = false;

@@ -416,9 +416,13 @@ void Pacman::Update(int elapsedTime) {
 	{
 		_frameCount++;
 		Input(elapsedTime, keyboardState);	// get input from user
-		UpdateGhosts(elapsedTime);
 		UpdatePacman(elapsedTime);			// update pacman's position, animation, etc
-		CheckViewPortCollision();
+		UpdateGhosts(elapsedTime);
+		CheckViewPortCollision(_pacman);
+		for (int i = 0; i < 4; i++)
+		{
+			CheckViewPortCollision(_ghosts[i]);
+		}
 		UpdateMunchie(elapsedTime);
 		UpdateCherry(elapsedTime);
 		UpdatePowerUp(elapsedTime);
@@ -427,6 +431,10 @@ void Pacman::Update(int elapsedTime) {
 		{
 			_complete = true;
 			StartNewLevel();
+		}
+		if (IsKilled())
+		{
+			_dead = true;
 		}
 	}
 }
@@ -493,19 +501,19 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 		_pause->_keyDown = false;
 }
 
-void Pacman::CheckViewPortCollision()
+void Pacman::CheckViewPortCollision(Player* player)
 {
-	if (_pacman->_Position->X + _pacman->_SourceRect->Width > 650)
-		_pacman->_Position->X = 0 - _pacman->_SourceRect->Width;
+	if (player->_Position->X + player->_SourceRect->Width > 650)
+		player->_Position->X = 0 - player->_SourceRect->Width;
 
-	if (_pacman->_Position->X + _pacman->_SourceRect->Width < 0)
-		_pacman->_Position->X = 650 - _pacman->_SourceRect->Width;
+	if (player->_Position->X + player->_SourceRect->Width < 0)
+		player->_Position->X = 650 - player->_SourceRect->Width;
 
-	if (_pacman->_Position->Y + _pacman->_SourceRect->Width > Graphics::GetViewportHeight())
-		_pacman->_Position->Y = 0 - _pacman->_SourceRect->Width;
+	if (player->_Position->Y + player->_SourceRect->Width > Graphics::GetViewportHeight())
+		player->_Position->Y = 0 - _pacman->_SourceRect->Width;
 
-	if (_pacman->_Position->Y + _pacman->_SourceRect->Width < 0)
-		_pacman->_Position->Y = Graphics::GetViewportHeight() - _pacman->_SourceRect->Width;
+	if (player->_Position->Y + player->_SourceRect->Width < 0)
+		player->_Position->Y = Graphics::GetViewportHeight() - player->_SourceRect->Width;
 }
 
 void Pacman::LoadGhosts()
@@ -576,52 +584,52 @@ void Pacman::UpdatePacman(int elapsedTime)
 	//cout << _pacman->currentDir << "  " << _pacman->nextDir << endl;
 
 	Move(_pacman, elapsedTime);
-	CheckIfCanTurn(_pacman->currentDir, _pacman->nextDir);
+	CheckIfCanTurn(_pacman, _pacman->currentDir, _pacman->nextDir);
 }
 
-void Pacman::CheckIfCanTurn(Direction direction, Direction next) {
+void Pacman::CheckIfCanTurn(Player* player, Direction direction, Direction next) {
 	//cout << "checking ...";
 	if (next == Direction::Up && direction != Direction::Up)
 	{
-		if (GetTileAt((_pacman->_Position->Y / 32) - 1, (_pacman->_Position->X / 32)) == 1)
+		if (GetTileAt((player->_Position->Y / 32) - 1, (player->_Position->X / 32)) == 1)
 		{
-			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
-			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+			player->_Position->X = ((int)player->_Position->X / 32) * 32;
+			player->_Position->Y = ((int)player->_Position->Y / 32) * 32;
 
-			_pacman->canTurn = true;
+			player->canTurn = true;
 			//cout << "can turn" << endl;
 		}
 	}
 	if (next == Direction::Down && direction != Direction::Down)
 	{
-		if (GetTileAt((_pacman->_Position->Y / 32) + 1, (_pacman->_Position->X / 32)) == 1)
+		if (GetTileAt((player->_Position->Y / 32) + 1, (player->_Position->X / 32)) == 1)
 		{
-			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
-	    	_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+			player->_Position->X = ((int)player->_Position->X / 32) * 32;
+			player->_Position->Y = ((int)player->_Position->Y / 32) * 32;
 		
-			_pacman->canTurn = true;
+			player->canTurn = true;
 			//cout << "can turn" << endl;
 		}
 	}
 	if (next == Direction::Left && direction != Direction::Left)
 	{
-		if (GetTileAt((_pacman->_Position->Y / 32), (_pacman->_Position->X / 32) - 1) == 1)
+		if (GetTileAt((player->_Position->Y / 32), (player->_Position->X / 32) - 1) == 1)
 		{
-			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
-			_pacman->_Position->Y = ((int)(_pacman->_Position->Y) / 32) * 32;
+			player->_Position->X = ((int)player->_Position->X / 32) * 32;
+			player->_Position->Y = ((int)(player->_Position->Y) / 32) * 32;
 
-			_pacman->canTurn = true;
+			player->canTurn = true;
 			//cout << "can turn" << endl;
 		}
 	}
 	if (next == Direction::Right && direction != Direction::Right)
 	{
-		if (GetTileAt((_pacman->_Position->Y / 32), (_pacman->_Position->X / 32) + 1) == 1)
+		if (GetTileAt((player->_Position->Y / 32), (player->_Position->X / 32) + 1) == 1)
 		{
-			_pacman->_Position->X = ((int)_pacman->_Position->X / 32) * 32;
-			_pacman->_Position->Y = ((int)_pacman->_Position->Y / 32) * 32;
+			player->_Position->X = ((int)player->_Position->X / 32) * 32;
+			player->_Position->Y = ((int)player->_Position->Y / 32) * 32;
 
-			_pacman->canTurn = true;
+			player->canTurn = true;
 			//cout << "can turn" << endl;
 		}
 	}
@@ -799,6 +807,7 @@ void Pacman::UpdateGhosts(int elapsedTime)
 	{
 		Move(_ghosts[i], elapsedTime);
 		ChooseRandomDirection(_ghosts[i]);
+		CheckIfCanTurn(_ghosts[i], _ghosts[i]->currentDir, _ghosts[i]->nextDir);
 	}
 }
 
@@ -821,6 +830,21 @@ void Pacman::ChooseRandomDirection(Player* ghost)
 			break;
 		}
 	}
+}
+
+bool Pacman::IsKilled()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (collisionCheck(_ghosts[i]->_Position->X, _ghosts[i]->_Position->Y, _ghosts[i]->_SourceRect->Width, _ghosts[i]->_SourceRect->Height, 
+			_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height))
+		{
+			cout << _ghosts[i]->_Position->X << " " << _ghosts[i]->_Position->Y;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Pacman::UpdateMunchie(int elapsedTime)

@@ -125,6 +125,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv)
 	_pacman->currentDir = Direction::STILL;
 	_pacman->nextDir = Direction::STILL;
 	_pacman->startPos = new Vector2(288, 544);
+	_pacman->_lives = 3;
 
 	_cherry = new Collectable();
 	_cherry->_Texture = new Texture2D();
@@ -434,9 +435,17 @@ void Pacman::Update(int elapsedTime) {
 		}
 		if (IsKilled())
 		{
-			_dead = true;
+			ResetPacman();
+			Sleep(500);
 		}
 	}
+	//if (_dead)
+	//{
+	//	if (_pacman._lives < 0)
+	//	{
+	//		GameOver();
+	//	}
+	//}
 }
 
 int Pacman::ScoreBoard()
@@ -840,11 +849,22 @@ bool Pacman::IsKilled()
 			_pacman->_Position->X, _pacman->_Position->Y, _pacman->_SourceRect->Width, _pacman->_SourceRect->Height))
 		{
 			cout << _ghosts[i]->_Position->X << " " << _ghosts[i]->_Position->Y;
+			_pacman->_lives --;
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void Pacman::ResetPacman()
+{
+	_pacman->_Position = _pacman->startPos;
+	_pacman->nextDir = Direction::STILL;
+	for (int i = 0; i < 4; i++)
+	{
+		_ghosts[i]->_Position = _ghosts[i]->startPos;
+	}
 }
 
 void Pacman::UpdateMunchie(int elapsedTime)
@@ -1050,6 +1070,15 @@ void Pacman::Draw(int elapsedTime)
 
 		SpriteBatch::Draw(_pause->_menuBackground, _pause->_menuRectangle, nullptr);
 		SpriteBatch::DrawString(menuStream.str().c_str(), _pause->_menuStringPosition, Color::Red);
+	}
+
+	//lives UI
+	Texture2D* _livesTex = new Texture2D();
+	_livesTex->Load("Textures/pointer.png", false);
+
+	for (int i = 0; i < _pacman->_lives; i++)
+	{
+		SpriteBatch::Draw(_livesTex, new Rect((i * 32), 0, 20, 20), nullptr);
 	}
 
 	SpriteBatch::EndDraw(); // Ends Drawing

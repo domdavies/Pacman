@@ -56,6 +56,7 @@ struct Player {
 	Direction currentDir, nextDir;
 	bool canTurn;
 	vector<Direction> directionsToTurn;
+	int _lives;
 };
 
 struct Collectable {
@@ -146,7 +147,7 @@ private:
 
 	bool IsKilled();
 
-	void TurnAtIntersection(Player* player, Direction direction, Direction next);
+	void ResetPacman();
 
 	bool _dead = false;
 	bool _complete = false;
